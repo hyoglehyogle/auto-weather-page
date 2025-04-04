@@ -1,0 +1,6 @@
+[build]
+  command = "python3 weather_scraper.py"
+  publish = "."
+
+[functions]
+  node_bundler = "esbuild"
