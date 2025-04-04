@@ -27,25 +27,10 @@ def scrape_land_weather():
             output_html += str(tag)
 
     # 오늘 날짜 포함한 제목 생성
-    date_str = datetime.today().strftime("%Y년 %m월 %d일 기준")
+    date_str = datetime.today().strftime("%Y년 %m월 %d일 %H:%M 기준")
     final_html = f"""
     <html>
     <head>
-        <meta charset="UTF-8">
-        <title>주간 육상 날씨</title>
-        <style>
-            th {{
-                padding: 6px;
-                text-align: center;
-            }}
-            td {{
-                padding: 4px;
-                text-align: center;
-            }}
-            th:contains("토"), th:contains("일") {{
-                color: red;
-            }}
-        </style>
     </head>
     <body>
         <h2>주간 육상 날씨</h2>
