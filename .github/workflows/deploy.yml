@@ -1,0 +1,33 @@
+name: Scrape and Deploy Weather HTML
+
+on:
+  schedule:
+    - cron: '0 2 * * *'  # 매일 11AM (KST) 실행
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install beautifulsoup4 requests
+
+      - name: Run scraper script
+        run: python weather_scraper.py
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add index.html
+          git commit -m "자동 업데이트된 날씨 정보"
+          git push
