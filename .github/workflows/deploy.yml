@@ -1,8 +1,8 @@
-name: Scrape and Deploy Weather HTML
+name: Hourly Weather Update
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 매일 오전 11시 (KST)
+    - cron: '0 * * * *'  # 매시간 정시 (UTC 기준, 한국은 +9시)
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Set up Python
@@ -19,18 +19,15 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: |
-          pip install beautifulsoup4 requests
+        run: pip install beautifulsoup4 requests
 
-      - name: Run scraper script
+      - name: Run scraper
         run: python weather_scraper.py
 
-      - name: Commit and push
+      - name: Commit & push updated HTML
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add index.html
           git commit -m "자동 업데이트된 날씨 정보"
-          git push https://x-access-token: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@github.com/hyoglehyogle/auto-weather-page.git HEAD:main
-
-
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
