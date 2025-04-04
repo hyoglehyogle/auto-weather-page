@@ -1,6 +1,7 @@
-import requests, re
+import requests
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
+import re  # 숫자% 제거용
 
 def scrape_land_weather():
     url = 'https://www.weather.go.kr/w/weather/forecast/mid-term.do'
@@ -36,20 +37,25 @@ def scrape_land_weather():
                 "황사": "🌫️"
             }
 
-            # ✅ tag 안에 있는 <td> 안에서만 텍스트 치환
+            # ✅ <td> 안에서 아이콘 치환 + 숫자% 제거
             for td in tag.find_all("td"):
-                for text, icon in icon_map.items():
-                    if text in td.text:
-                        td.string = td.text.replace(text, icon)
+                text = td.text
 
-            # ✅ 숫자% 제거 (정규표현식으로)
-            if td.string:
-                td.string = re.sub(r'\d+%', '', td.string)
+                # 아이콘 치환
+                for word, icon in icon_map.items():
+                    if word in text:
+                        text = text.replace(word, icon)
+
+                # 숫자% 제거
+                text = re.sub(r'\d+%', '', text).strip()
+
+                td.string = text
 
             output_html += str(tag)
 
     # ✅ 한국 시간 기준으로 최종 업데이트 시간 표시
     date_str = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y년 %m월 %d일 %H:%M 기준")
+
     final_html = f"""
     <html>
     <head>
