@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 from datetime import datetime, timedelta
 
 def scrape_land_weather():
@@ -25,7 +25,7 @@ def scrape_land_weather():
             if tag.name == 'h3' and '최저/최고기온' in tag.text:
                 break
 
-            # ✅ 여기서 태그 안 텍스트에 아이콘 치환!
+            # ✅ 날씨 텍스트 → 이모지 아이콘 매핑
             icon_map = {
                 "맑음": "☀️",
                 "흐림": "⛅️",
@@ -41,26 +41,9 @@ def scrape_land_weather():
                     tag.string.replace_with(tag.string.replace(text, icon))
                 elif text in tag.decode_contents():
                     tag.clear()
-                    tag.append(BeautifulSoup(tag.decode_contents().replace(text, icon), 'html.parser'))
+                    tag.append(NavigableString(tag.decode_contents().replace(text, icon)))
 
-            output_html += str(tag)  # ← 이 줄은 치환이 끝난 후 한 번만!
+            output_html += str(tag)
 
-    # 오늘 날짜 포함한 제목 생성
-    date_str = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y년 %m월 %d일 %H:%M 기준")
-    final_html = f"""
-    <html>
-    <head>
-    </head>
-    <body>
-        <h2>주간 육상 날씨</h2>
-        <p>{date_str}</p>
-        {output_html}
-    </body>
-    </html>
-    """
-
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(final_html)
-
-if __name__ == "__main__":
-    scrape_land_weather()
+    # 오늘 날짜 포함한 제목 생성 (한국 시간 기준)
+    date_str = (datetime.utcnow() + timedelta(hours=_
