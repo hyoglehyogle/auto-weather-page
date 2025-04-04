@@ -2,7 +2,7 @@ name: Scrape and Deploy Weather HTML
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 매일 11AM (KST) 실행
+    - cron: '0 2 * * *'  # 매일 오전 11시 (KST)
   workflow_dispatch:
 
 jobs:
@@ -10,7 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repo
+        uses: actions/checkout@v2
 
       - name: Set up Python
         uses: actions/setup-python@v2
@@ -31,4 +32,3 @@ jobs:
           git add index.html
           git commit -m "자동 업데이트된 날씨 정보"
           git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
-
