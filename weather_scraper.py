@@ -46,4 +46,25 @@ def scrape_land_weather():
             output_html += str(tag)
 
     # 오늘 날짜 포함한 제목 생성 (한국 시간 기준)
-    date_str = (datetime.utcnow() + timedelta(hours=_
+    date_str = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y년 %m월 %d일 %H:%M 기준")
+
+    final_html = f"""
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>주간 육상 날씨</title>
+    </head>
+    <body>
+        <h2>주간 육상 날씨</h2>
+        <p><strong>최종 업데이트:</strong> {date_str}</p>
+        {output_html}
+    </body>
+    </html>
+    """
+
+    # HTML 저장
+    with open("index.html", "w", encoding="utf-8") as f:
+        f.write(final_html)
+
+if __name__ == "__main__":
+    scrape_land_weather()
