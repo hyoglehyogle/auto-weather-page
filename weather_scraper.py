@@ -1,4 +1,4 @@
-import requests
+import requests, re
 from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
@@ -41,6 +41,10 @@ def scrape_land_weather():
                 for text, icon in icon_map.items():
                     if text in td.text:
                         td.string = td.text.replace(text, icon)
+
+            # ✅ 숫자% 제거 (정규표현식으로)
+            if td.string:
+                td.string = re.sub(r'\d+%', '', td.string)
 
             output_html += str(tag)
 
