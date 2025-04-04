@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from datetime import datetime
+from datetime import datetime, timedelta
 
 def scrape_land_weather():
     url = 'https://www.weather.go.kr/w/weather/forecast/mid-term.do'
@@ -27,7 +27,7 @@ def scrape_land_weather():
             output_html += str(tag)
 
     # 오늘 날짜 포함한 제목 생성
-    date_str = datetime.today().strftime("%Y년 %m월 %d일 %H:%M 기준")
+    date_str = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y년 %m월 %d일 %H:%M 기준")
     final_html = f"""
     <html>
     <head>
