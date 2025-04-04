@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup, NavigableString
+from bs4 import BeautifulSoup
 from datetime import datetime, timedelta
 
 def scrape_land_weather():
@@ -25,7 +25,7 @@ def scrape_land_weather():
             if tag.name == 'h3' and '최저/최고기온' in tag.text:
                 break
 
-            # ✅ 날씨 텍스트 → 이모지 아이콘 매핑
+            # ✅ 아이콘 매핑
             icon_map = {
                 "맑음": "☀️",
                 "흐림": "⛅️",
@@ -36,18 +36,16 @@ def scrape_land_weather():
                 "황사": "🌫️"
             }
 
-            for text, icon in icon_map.items():
-                if tag.string and text in tag.string:
-                    tag.string.replace_with(tag.string.replace(text, icon))
-                elif text in tag.decode_contents():
-                    tag.clear()
-                    tag.append(NavigableString(tag.decode_contents().replace(text, icon)))
+            # ✅ tag 안에 있는 <td> 안에서만 텍스트 치환
+            for td in tag.find_all("td"):
+                for text, icon in icon_map.items():
+                    if text in td.text:
+                        td.string = td.text.replace(text, icon)
 
             output_html += str(tag)
 
-    # 오늘 날짜 포함한 제목 생성 (한국 시간 기준)
+    # ✅ 한국 시간 기준으로 최종 업데이트 시간 표시
     date_str = (datetime.utcnow() + timedelta(hours=9)).strftime("%Y년 %m월 %d일 %H:%M 기준")
-
     final_html = f"""
     <html>
     <head>
@@ -62,7 +60,7 @@ def scrape_land_weather():
     </html>
     """
 
-    # HTML 저장
+    # ✅ index.html로 저장
     with open("index.html", "w", encoding="utf-8") as f:
         f.write(final_html)
 
