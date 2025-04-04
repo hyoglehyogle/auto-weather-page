@@ -1,5 +1,5 @@
 [build]
-  command = "python3 weather_scraper.py"
+  command = "pip install -r requirements.txt && python3 weather_scraper.py"
   publish = "."
 
 [functions]
