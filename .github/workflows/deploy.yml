@@ -2,8 +2,8 @@ name: Hourly Weather Update
 
 on:
   schedule:
-    - cron: '0 * * * *'   # 매시 정각 (UTC)
-    - cron: '30 * * * *'  # 매시 30분 (UTC)
+    #- cron: '0 * * * *'   # 매시 정각 (UTC)
+    #- cron: '30 * * * *'  # 매시 30분 (UTC)
   workflow_dispatch:
 
 jobs:
